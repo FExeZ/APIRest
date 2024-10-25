@@ -1,6 +1,7 @@
 package ar.com.fez.tech.APIRest.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import ar.com.fez.tech.APIRest.entities.Product;
 
@@ -8,10 +9,14 @@ public interface ProductService {
 
     List<Product> getProducts();
 
-    void createProduct(Product product) throws Exception;
+    Product createProduct(Product product) throws Exception;
 
-    void deleteProduct(Product product);
+    void deleteProduct(Long id) throws Exception;
 
-    void updateProduct(Product product);
+    void updateProduct(Product product) throws Exception;
+
+    Product findById(Long id) throws Exception;
+
+    Optional<Product> getProductById(Long id);
 
 }
