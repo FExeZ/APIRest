@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import ar.com.fez.tech.APIRest.entities.Product;
 import ar.com.fez.tech.APIRest.repositories.ProductRepository;
 import ar.com.fez.tech.APIRest.services.ProductService;
 
+@Service
 public class ProductServiceImp implements ProductService {
 
     @Autowired
-    private ProductRepository productRepository;
+    ProductRepository productRepository;
 
     @Override
     public List<Product> getProducts() {
@@ -39,15 +41,7 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public void updateProduct(Product product) throws Exception {
-        Product productDB = productRepository.findById(product.getId())
-                .orElseThrow(() -> new Exception("Product not found"));
-        productRepository.save(productDB);
-    }
-
-    @Override
-    public Product findById(Long id) throws Exception {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new Exception("Product not found"));
+        productRepository.save(product);
     }
 
     @Override

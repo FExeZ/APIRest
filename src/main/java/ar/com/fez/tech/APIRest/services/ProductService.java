@@ -3,8 +3,11 @@ package ar.com.fez.tech.APIRest.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import ar.com.fez.tech.APIRest.entities.Product;
 
+@Service
 public interface ProductService {
 
     List<Product> getProducts();
@@ -14,8 +17,6 @@ public interface ProductService {
     void deleteProduct(Long id) throws Exception;
 
     void updateProduct(Product product) throws Exception;
-
-    Product findById(Long id) throws Exception;
 
     Optional<Product> getProductById(Long id);
 

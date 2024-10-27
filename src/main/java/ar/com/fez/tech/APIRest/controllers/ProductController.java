@@ -24,7 +24,7 @@ import ar.com.fez.tech.APIRest.services.ProductService;
 @RequestMapping("/products")
 public class ProductController {
     @Autowired
-    private ProductService productService;
+    ProductService productService;
 
     @GetMapping // Get all products
     public List<Product> getProducts() {
@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @SuppressWarnings("null")
-    @GetMapping("/products/{id}") // Get product by id
+    @GetMapping("/{id}") // Get product by id
     public ResponseEntity<Product> getProductById(@PathVariable Long id) throws Exception {
         Optional<Product> product = productService.getProductById(id);
         if (product.isPresent()) {
@@ -43,8 +43,8 @@ public class ProductController {
     }
 
     @SuppressWarnings("null")
-    @PostMapping("/products") // Register a product
-    public ResponseEntity<?> createProduct(CreateProductDto productDto) throws Exception {
+    @PostMapping // Register a product
+    public ResponseEntity<?> createProduct(@RequestBody CreateProductDto productDto) throws Exception {
         ModelMapper mapper = new ModelMapper();
         Product productDB = mapper.map(productDto, Product.class);
         try {
@@ -56,25 +56,25 @@ public class ProductController {
     }
 
     @SuppressWarnings("null")
-    @PutMapping("/products/{id}") // Updating a product by ID
+    @PutMapping("/{id}") // Updating a product by ID
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody CreateProductDto productDetails)
             throws Exception {
-        if (productService.getProductById(id).isPresent()) {
-            ModelMapper mapper = new ModelMapper();
-            try {
-                Product productDB = mapper.map(productDetails, Product.class);
-                productService.updateProduct(productDB);
-                return new ResponseEntity<>(productDB, HttpStatus.ACCEPTED);
-            } catch (Exception e) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-            }
+        Optional<Product> existingProductOpt = productService.getProductById(id);
+        if (existingProductOpt.isPresent()) {
+            Product existingProduct = existingProductOpt.get();
+            existingProduct.setName(productDetails.getName());
+            existingProduct.setDescription(productDetails.getDescription());
+            existingProduct.setPrice(productDetails.getPrice());
+            existingProduct.setQuantity(productDetails.getQuantity());
+            productService.updateProduct(existingProduct);
+            return new ResponseEntity<>(existingProduct, HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
     @SuppressWarnings("null")
-    @DeleteMapping("/products/{id}") // Delete a product by ID
+    @DeleteMapping("/{id}") // Delete a product by ID
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) throws Exception {
         if (productService.getProductById(id).isPresent()) {
             productService.deleteProduct(id);
